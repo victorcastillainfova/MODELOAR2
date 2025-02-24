@@ -5,13 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelo 3D - KIA</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
+    <style>
+        /* Estilo para el botón en AR */
+        #ar-button {
+            display: none; /* Se oculta hasta entrar en AR */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Visualización de modelo 3D</h1>
     
     <model-viewer 
         id="car"
-        src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb"
+        src="https://victorcastillainfova.github.io/MODELOAR/KIA-2.glb"
         alt="Modelo KIA"
         auto-rotate
         camera-controls
@@ -24,8 +41,12 @@
         <button onclick="toggleDoors()">Abrir/Cerrar puertas</button>
     </div>
 
+    <!-- Botón para AR -->
+    <button id="ar-button" onclick="toggleDoors()">Abrir/Cerrar puertas</button>
+
     <script>
         const car = document.getElementById("car");
+        const arButton = document.getElementById("ar-button");
         let doorsOpen = false;
 
         function toggleDoors() {
@@ -37,6 +58,18 @@
             }
             doorsOpen = !doorsOpen;
         }
+
+        // Detectar si se entra en modo AR
+        car.addEventListener("ar-status", (event) => {
+            if (event.detail.status === "session-started") {
+                arButton.style.display = "block"; // Mostrar botón en AR
+            } else if (event.detail.status === "session-ended") {
+                arButton.style.display = "none"; // Ocultar al salir de AR
+            }
+        });
+
+        // Activar animación tocando el coche en AR
+        car.addEventListener("click", toggleDoors);
     </script>
 </body>
 </html>
