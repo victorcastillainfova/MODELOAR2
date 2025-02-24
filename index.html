@@ -17,35 +17,24 @@
         camera-controls
         ar
         ar-modes="webxr scene-viewer quick-look"
-        animation-name=""
+        animation-name="Doors opened"
+        autoplay
         style="width: 100%; height: 500px;">
     </model-viewer>
 
-    <!-- Botones para controlar la animación -->
-    <button onclick="toggleDoors()">🚗 Abrir / Cerrar puertas</button>
+    <!-- Botón para iniciar la vista en AR -->
     <button onclick="startAR()">🔍 Ver en AR</button>
 
     <script>
-        const car = document.getElementById("car");
-        let doorsOpen = false;
-
-        function toggleDoors() {
-            if (doorsOpen) {
-                car.pause();
-            } else {
-                car.animationName = "Doors opened";
-                car.play();
-            }
-            doorsOpen = !doorsOpen;
-        }
-
         function startAR() {
-            // Activar animación antes de entrar a AR
-            car.animationName = "Doors opened";
-            car.play();
-            doorsOpen = true;
+            const car = document.getElementById("car");
 
-            // Iniciar AR
+            // Asegurar que la animación esté en bucle antes de entrar en AR
+            car.animationName = "Doors opened";
+            car.autoplay = true;
+            car.play();
+
+            // Iniciar la vista AR
             car.activateAR();
         }
     </script>
