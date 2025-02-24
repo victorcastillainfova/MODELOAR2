@@ -6,8 +6,9 @@
     <title>Modelo 3D - KIA</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
     <style>
-        /* Botón de AR */
+        /* Estilo para el botón en AR */
         #ar-button {
+            display: none; /* Se oculta hasta entrar en AR */
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -19,8 +20,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            display: none; /* Se mostrará al entrar en AR */
-            z-index: 10; /* Para que esté siempre visible */
         }
     </style>
 </head>
@@ -42,7 +41,7 @@
         <button onclick="toggleDoors()">Abrir/Cerrar puertas</button>
     </div>
 
-    <!-- Botón en AR -->
+    <!-- Botón para AR -->
     <button id="ar-button" onclick="toggleDoors()">Abrir/Cerrar puertas</button>
 
     <script>
@@ -60,16 +59,16 @@
             doorsOpen = !doorsOpen;
         }
 
-        // Mostrar el botón al entrar en AR
+        // Detectar si se entra en modo AR
         car.addEventListener("ar-status", (event) => {
             if (event.detail.status === "session-started") {
-                arButton.style.display = "block"; // Mostrar botón
+                arButton.style.display = "block"; // Mostrar botón en AR
             } else if (event.detail.status === "session-ended") {
-                arButton.style.display = "none"; // Ocultar botón
+                arButton.style.display = "none"; // Ocultar al salir de AR
             }
         });
 
-        // Alternativa: Tocar el coche en AR activa la animación
+        // Activar animación tocando el coche en AR
         car.addEventListener("click", toggleDoors);
     </script>
 </body>
