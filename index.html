@@ -1,22 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo 3D - NINJA</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Búsqueda del Tesoro AR - KIA</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #score, #timer { position: absolute; top: 10px; left: 10px; color: white; font-size: 24px; }
+    #score { top: 50px; }
+    #question-box { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); font-size: 24px; color: white; }
+  </style>
 </head>
 <body>
-    <h1>Visualización de modelo 3D</h1>
-    
-    <model-viewer 
-        src="https://victorcastillainfova.github.io/MODELOAR2/ninja.glb"
-        alt="Modelo NINJA"
-        auto-rotate
-        camera-controls
-        ar
-        style="width: 100%; height: 500px;">
-    </model-viewer>
+  <a-scene embedded arjs>
+    <!-- Cámara para AR -->
+    <a-entity camera></a-entity>
 
+    <!-- Marcador de AR -->
+    <a-marker preset="hiro">
+      <a-entity id="car-model" gltf-model="url(assets/KIA-2.glb)" scale="0.5 0.5 0.5" position="0 0 0" rotation="0 0 0" class="interactive">
+      </a-entity>
+    </a-marker>
+
+    <!-- Elementos interactivos -->
+    <a-entity id="wheel" position="0 0 0" scale="0.5 0.5 0.5" visible="false" class="interactive" 
+      geometry="primitive: sphere; radius: 0.2;" material="color: blue;"></a-entity>
+
+    <a-entity position="0 0 -5" geometry="primitive: plane; width: 20; height: 20" material="color: #7BC8A4;"></a-entity>
+  </a-scene>
+
+  <!-- Elementos UI -->
+  <div id="score">Puntos: 0</div>
+  <div id="timer">Tiempo: 60s</div>
+  <div id="question-box" style="visibility: hidden;">Encuentra las llantas del coche</div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 60;
+    let timer = setInterval(function() {
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        alert("¡Tiempo agotado! Has obtenido " + score + " puntos.");
+      } else {
+        timeLeft--;
+        document.getElementById('timer').innerHTML = "Tiempo: " + timeLeft + "s";
+      }
+    }, 1000);
+
+    // Actualizar puntaje y mostrar mensaje cuando se haga clic en las llantas
+    document.querySelector('#wheel').addEventListener('click', function () {
+      score += 10;
+      document.getElementById('score').innerHTML = "Puntos: " + score;
+      document.getElementById('question-box').innerHTML = "¡Encontraste las llantas!";
+
+      setTimeout(() => {
+        document.getElementById('question-box').innerHTML = "Encuentra las puertas del coche";
+        document.querySelector('#wheel').setAttribute('visible', 'false'); // Ocultar llantas
+        // Mostrar otra parte interactiva (puertas, etc.)
+      }, 2000);
+    });
+
+    // Asumiendo que añadirás más interacciones para otras partes del coche
+  </script>
 </body>
 </html>
