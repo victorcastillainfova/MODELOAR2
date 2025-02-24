@@ -10,13 +10,33 @@
     <h1>Visualización de modelo 3D</h1>
     
     <model-viewer 
+        id="car"
         src="https://victorcastillainfova.github.io/MODELOAR/KIA-2.glb"
         alt="Modelo KIA"
         auto-rotate
         camera-controls
         ar
+        animation-name="Doors opened"
         style="width: 100%; height: 500px;">
     </model-viewer>
 
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="toggleDoors()">Abrir/Cerrar puertas</button>
+    </div>
+
+    <script>
+        const car = document.getElementById("car");
+        let doorsOpen = false;
+
+        function toggleDoors() {
+            if (doorsOpen) {
+                car.pause();
+            } else {
+                car.animationName = "Doors opened";
+                car.play();
+            }
+            doorsOpen = !doorsOpen;
+        }
+    </script>
 </body>
 </html>
