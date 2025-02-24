@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR Viewer with Lighting Controls</title>
+    <title>AR Viewer without Marker</title>
 
     <!-- A-Frame and AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -32,26 +32,18 @@
       <button id="toggleLight">Toggle Light</button>
     </div>
 
-    <a-scene
-      embedded
-      arjs
-      vr-mode-ui="enabled: false"
-      renderer="logarithmicDepthBuffer: true"
-    >
-      <!-- Define the marker (you can change it to 'hiro' or 'kanji') -->
-      <a-marker preset="hiro">
-        <!-- 3D Model -->
-        <a-entity
-          id="carModel"
-          gltf-model="url(assets/KIA-2.glb)"
-          scale="0.5 0.5 0.5"
-          position="0 0 0"
-          rotation="0 0 0"
-        ></a-entity>
+    <a-scene embedded arjs vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true">
+      <!-- 3D Model -->
+      <a-entity
+        id="carModel"
+        gltf-model="url(assets/KIA-2.glb)"
+        scale="0.5 0.5 0.5"
+        position="0 0 0"
+        rotation="0 0 0"
+      ></a-entity>
 
-        <!-- Lights -->
-        <a-light id="light" type="directional" position="0 2 3" intensity="0.8"></a-light>
-      </a-marker>
+      <!-- Lights -->
+      <a-light id="light" type="directional" position="0 2 3" intensity="0.8"></a-light>
 
       <!-- Camera -->
       <a-entity camera></a-entity>
