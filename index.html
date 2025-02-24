@@ -3,30 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AR with Three.js and AR.js</title>
+    <title>AR Viewer with Lighting Controls</title>
+
+    <!-- A-Frame and AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js@master/aframe/build/aframe-ar.js"></script>
+
+    <!-- dat.GUI for UI controls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 10;
+        color: white;
+      }
+    </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
+  <body>
+    <div id="controls">
+      <h3>Lighting Controls</h3>
+      <button id="toggleLight">Toggle Light</button>
+    </div>
+
     <a-scene
       embedded
       arjs
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true"
     >
-      <!-- Define the marker -->
-      <a-marker preset="kanji">
-        <!-- 3D model of the car -->
+      <!-- Define the marker (you can change it to 'hiro' or 'kanji') -->
+      <a-marker preset="hiro">
+        <!-- 3D Model -->
         <a-entity
+          id="carModel"
           gltf-model="url(assets/KIA-2.glb)"
           scale="0.5 0.5 0.5"
           position="0 0 0"
           rotation="0 0 0"
         ></a-entity>
+
+        <!-- Lights -->
+        <a-light id="light" type="directional" position="0 2 3" intensity="0.8"></a-light>
       </a-marker>
 
       <!-- Camera -->
       <a-entity camera></a-entity>
     </a-scene>
+
+    <script>
+      // Initialize the light toggle functionality
+      const toggleButton = document.getElementById('toggleLight');
+      const lightEntity = document.getElementById('light');
+      let lightOn = true;
+
+      toggleButton.addEventListener('click', function () {
+        lightOn = !lightOn;
+        lightEntity.setAttribute('intensity', lightOn ? 0.8 : 0); // Toggle light intensity
+      });
+    </script>
   </body>
 </html>
