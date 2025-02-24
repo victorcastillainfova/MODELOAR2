@@ -16,15 +16,14 @@
         auto-rotate
         camera-controls
         ar
-        animation-name="Doors opened"
+        ar-modes="webxr scene-viewer quick-look"
+        animation-name=""
         style="width: 100%; height: 500px;">
-
-        <!-- Hotspot para activar animación tocando en AR -->
-        <button slot="hotspot-1" data-position="1 1 1" data-normal="0 1 0" onclick="toggleDoors()">
-            🚗 Abrir / Cerrar puertas
-        </button>
-
     </model-viewer>
+
+    <!-- Botones para controlar la animación -->
+    <button onclick="toggleDoors()">🚗 Abrir / Cerrar puertas</button>
+    <button onclick="startAR()">🔍 Ver en AR</button>
 
     <script>
         const car = document.getElementById("car");
@@ -38,6 +37,16 @@
                 car.play();
             }
             doorsOpen = !doorsOpen;
+        }
+
+        function startAR() {
+            // Activar animación antes de entrar a AR
+            car.animationName = "Doors opened";
+            car.play();
+            doorsOpen = true;
+
+            // Iniciar AR
+            car.activateAR();
         }
     </script>
 </body>
