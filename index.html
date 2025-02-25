@@ -6,21 +6,39 @@
     <title>REALIDAD AUMENTADA KIA_víctor</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
     <style>
-        #measures {
-            font-size: 18px;
+        body {
+            text-align: center;
+            background-color: #222;
             color: white;
+        }
+        #controls {
+            margin: 10px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .annotation {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             padding: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <h1>Visualización de modelo 3D</h1>
-    <div id="measures"></div>
-    
+
+    <div id="controls">
+        <button onclick="toggleMeasurements()">Mostrar/Ocultar Medidas</button>
+        <button onclick="toggleDoors()">Abrir/Cerrar Puertas</button>
+    </div>
+
     <model-viewer 
         id="car-model"
         src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb"
@@ -28,29 +46,35 @@
         auto-rotate
         camera-controls
         ar
+        ar-modes="scene-viewer quick-look webxr"
         style="width: 100%; height: 500px;">
+        <button slot="ar-button">Ver en RA</button>
+
+        <!-- Etiquetas de medidas -->
+        <div id="measurements">
+            <div class="annotation" id="height" style="top: 20%; left: 50%;">Alto: 1.5m</div>
+            <div class="annotation" id="width" style="top: 50%; left: 90%;">Ancho: 2.0m</div>
+            <div class="annotation" id="length" style="top: 80%; left: 50%;">Largo: 4.5m</div>
+        </div>
     </model-viewer>
 
     <script>
-        document.querySelector('model-viewer').addEventListener('load', function() {
-            // Medidas del coche en metros
-            const dimensions = {
-                alto: 1.5,   // Ajusta a las medidas reales
-                ancho: 2.0,  // Ajusta a las medidas reales
-                largo: 4.5   // Ajusta a las medidas reales
-            };
+        let doorsOpen = false;
+        let measuresVisible = false;
 
-            // Mostrar medidas en la pantalla
-            const measuresText = `Alto: ${dimensions.alto}m, Ancho: ${dimensions.ancho}m, Largo: ${dimensions.largo}m`;
-            document.getElementById('measures').textContent = measuresText;
+        function toggleDoors() {
+            const model = document.getElementById('car-model');
+            doorsOpen = !doorsOpen;
+            model.animationName = doorsOpen ? "abrir_puertas" : "cerrar_puertas";
+            model.play();
+        }
 
-            // Evento para abrir puertas si existe la animación
-            const model = document.querySelector('model-viewer');
-            model.addEventListener('click', function() {
-                model.animationName = "abrir_puertas"; // Asegúrate de que la animación de apertura se llama "abrir_puertas"
-                model.play();
+        function toggleMeasurements() {
+            measuresVisible = !measuresVisible;
+            document.querySelectorAll('.annotation').forEach(el => {
+                el.style.display = measuresVisible ? 'block' : 'none';
             });
-        });
+        }
     </script>
 </body>
 </html>
