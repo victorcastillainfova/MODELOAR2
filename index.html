@@ -20,14 +20,13 @@
             margin: 5px;
             cursor: pointer;
         }
-        /* Estilos de los hotspots */
         .hotspot {
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 5px;
             border-radius: 5px;
             font-size: 14px;
-            display: block;
+            display: none;
             position: relative;
         }
     </style>
@@ -36,34 +35,37 @@
     <h1>Visualización de modelo 3D</h1>
 
     <div id="controls">
+        <button onclick="toggleMeasurements()">Mostrar/Ocultar Medidas</button>
         <button onclick="toggleDoors()">Abrir/Cerrar Puertas</button>
     </div>
 
     <model-viewer 
         id="car-model"
-        src="https://victorcastillainfova.github.io/MODELOAR/KIA-2.glb"
+        src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb"
         alt="Modelo KIA"
         auto-rotate
         camera-controls
         ar
         ar-modes="scene-viewer quick-look webxr"
-        style="width: 100%; height: 500px;">
+        style="width: 100%; height: 500px;"
+        animation-name="abrir_puertas"
+        autoplay>
         
         <button slot="ar-button">Ver en RA</button>
 
-        <!-- Hotspots para medidas -->
-        <button class="hotspot" slot="hotspot-1" data-position="0 1.5 0" data-normal="0 1 0">
+        <!-- Hotspots para medidas (ocultas por defecto) -->
+        <button class="hotspot" id="height" slot="hotspot-1" data-position="0 1.5 0" data-normal="0 1 0">
             Alto: 1.5m
         </button>
-        <button class="hotspot" slot="hotspot-2" data-position="1 0.8 0" data-normal="1 0 0">
+        <button class="hotspot" id="width" slot="hotspot-2" data-position="1 0.8 0" data-normal="1 0 0">
             Ancho: 2.0m
         </button>
-        <button class="hotspot" slot="hotspot-3" data-position="0 0 2" data-normal="0 0 1">
+        <button class="hotspot" id="length" slot="hotspot-3" data-position="0 0 2" data-normal="0 0 1">
             Largo: 4.5m
         </button>
 
         <!-- Botón dentro del modelo para abrir puertas -->
-        <button class="hotspot" slot="hotspot-4" data-position="0 1 1.5" data-normal="0 0 1" onclick="toggleDoors()">
+        <button class="hotspot" id="door-button" slot="hotspot-4" data-position="0 1 1.5" data-normal="0 0 1" onclick="toggleDoors()">
             Abrir/Cerrar Puertas
         </button>
 
@@ -71,12 +73,20 @@
 
     <script>
         let doorsOpen = false;
+        let measuresVisible = false;
 
         function toggleDoors() {
             const model = document.getElementById('car-model');
             doorsOpen = !doorsOpen;
             model.animationName = doorsOpen ? "abrir_puertas" : "cerrar_puertas";
             model.play();
+        }
+
+        function toggleMeasurements() {
+            measuresVisible = !measuresVisible;
+            document.querySelectorAll('.hotspot').forEach(el => {
+                el.style.display = measuresVisible ? 'block' : 'none';
+            });
         }
     </script>
 </body>
