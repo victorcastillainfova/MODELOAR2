@@ -13,6 +13,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      background-color: #f0f0f0;
     }
 
     .controls {
@@ -32,6 +33,12 @@
 
     .controls input {
       width: 200px;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100vh;
+      background-color: #ffffff;
     }
   </style>
 </head>
@@ -55,7 +62,7 @@
 
   <model-viewer
     id="modelViewer"
-    src="KIA-2.glb"
+    src="KIA-2.glb"  <!-- Verifica que esta ruta sea correcta -->
     alt="Coche en 3D"
     ar
     ar-modes="webxr scene-viewer quick-look"
@@ -64,8 +71,7 @@
     background-color="#ffffff"
     shadow-intensity="1"
     light-intensity="1"
-    exposure="1"
-    style="width: 100%; height: 100vh;">
+    exposure="1">
   </model-viewer>
 
   <script>
