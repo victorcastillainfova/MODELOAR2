@@ -90,6 +90,34 @@
       modelViewer.setAttribute("exposure", event.target.value);
     });
 
-    // Control de rotación
+    // Control de rotación (se aplica a camera-orbit)
     document.getElementById("rotation").addEventListener("input", (event) => {
-      model
+      let currentOrbit = modelViewer.getAttribute("camera-orbit");
+      modelViewer.setAttribute("camera-orbit", `${currentOrbit.split(" ")[0]} ${event.target.value}deg ${currentOrbit.split(" ")[2]}`);
+    });
+
+    // Control de zoom (se aplica a camera-orbit)
+    document.getElementById("zoom").addEventListener("input", (event) => {
+      let currentOrbit = modelViewer.getAttribute("camera-orbit");
+      modelViewer.setAttribute("camera-orbit", `${currentOrbit.split(" ")[0]} ${currentOrbit.split(" ")[1]} ${event.target.value}%`);
+    });
+
+    // Cambio de color de fondo
+    document.getElementById("bgColor").addEventListener("input", (event) => {
+      modelViewer.setAttribute("background-color", event.target.value);
+    });
+
+    // Activar/desactivar sombras
+    document.getElementById("toggleShadows").addEventListener("change", (event) => {
+      modelViewer.setAttribute("shadow-intensity", event.target.checked ? "1" : "0");
+    });
+
+    // Cambio de entorno de iluminación
+    document.getElementById("environment").addEventListener("change", (event) => {
+      modelViewer.setAttribute("environment-image", event.target.value);
+    });
+
+  </script>
+
+</body>
+</html>
