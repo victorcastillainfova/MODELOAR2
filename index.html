@@ -3,91 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo 3D - KIA</title>
+    <title>REALIDAD AUMENTADA KIA_víctor/title>
     <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
     <style>
         body {
-            text-align: center;
-            background-color: #222;
-            color: white;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
         }
         #controls {
-            margin: 10px;
+            margin: 20px;
+            display: flex;
+            gap: 10px;
         }
-        button {
+        button, select {
             padding: 10px;
             font-size: 16px;
-            margin: 5px;
             cursor: pointer;
         }
-        .hotspot {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 14px;
+        #info-box {
             display: none;
-            position: relative;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            position: absolute;
+            top: 100px;
+            max-width: 300px;
+            z-index: 10;
+        }
+        #info-box h2 {
+            margin-top: 0;
+        }
+        #close-info {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            float: right;
+        }
+        .hotspot {
+            background: rgba(255, 0, 0, 0.8);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: none;
+            position: absolute;
+            cursor: pointer;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Visualización de modelo 3D</h1>
+    <h1>Kia Ceed Sportwagon 1.6 - Visor 3D Interactivo</h1>
 
     <div id="controls">
-        <button onclick="toggleMeasurements()">Mostrar/Ocultar Medidas</button>
-        <button onclick="toggleDoors()">Abrir/Cerrar Puertas</button>
+        <select id="colorSelector">
+            <option value="red">Rojo</option>
+            <option value="blue">Azul</option>
+            <option value="white">Blanco</option>
+        </select>
+        <button id="specsButton">Especificaciones Técnicas</button>
+        <button id="faultsButton">Simulación de Averías</button>
     </div>
 
-    <model-viewer 
-        id="car-model"
-        src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb"
-        alt="Modelo KIA"
+    <model-viewer id="carModel"
+        src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2-red.glb"
+        alt="Modelo 3D del Kia Ceed Sportwagon 1.6"
         auto-rotate
         camera-controls
         ar
         ar-modes="scene-viewer quick-look webxr"
-        style="width: 100%; height: 500px;"
-        animation-name="abrir_puertas"
-        autoplay>
-        
+        style="width: 100%; height: 500px;">
         <button slot="ar-button">Ver en RA</button>
-
-        <!-- Hotspots para medidas (ocultas por defecto) -->
-        <button class="hotspot" id="height" slot="hotspot-1" data-position="0 1.5 0" data-normal="0 1 0">
-            Alto: 1.5m
-        </button>
-        <button class="hotspot" id="width" slot="hotspot-2" data-position="1 0.8 0" data-normal="1 0 0">
-            Ancho: 2.0m
-        </button>
-        <button class="hotspot" id="length" slot="hotspot-3" data-position="0 0 2" data-normal="0 0 1">
-            Largo: 4.5m
-        </button>
-
-        <!-- Botón dentro del modelo para abrir puertas -->
-        <button class="hotspot" id="door-button" slot="hotspot-4" data-position="0 1 1.5" data-normal="0 0 1" onclick="toggleDoors()">
-            Abrir/Cerrar Puertas
-        </button>
-
+        <!-- Hotspots para simular averías -->
+        <button class="hotspot" id="engineHotspot" data-position="0 0.5 1" data-normal="0 0 1" title="Motor"></button>
+        <button class="hotspot" id="transmissionHotspot" data-position="0 -0.5 0" data-normal="0 0 1" title="Transmisión"></button>
+        <button class="hotspot" id="suspensionHotspot" data-position="0 0 1.5" data-normal="0 0 1" title="Suspensión"></button>
     </model-viewer>
 
+    <div id="info-box">
+        <button id="close-info">Cerrar</button>
+        <div id="info-content"></div>
+    </div>
+
     <script>
-        let doorsOpen = false;
-        let measuresVisible = false;
+        const carModel = document.getElementById('carModel');
+        const colorSelector = document.getElementById('colorSelector');
+        const specsButton = document.getElementById('specsButton');
+        const faultsButton = document.getElementById('faultsButton');
+        const infoBox = document.getElementById('info-box');
+        const infoContent = document.getElementById('info-content');
+        const closeInfo = document.getElementById('close-info');
+        const hotspots = document.querySelectorAll('.hotspot');
 
-        function toggleDoors() {
-            const model = document.getElementById('car-model');
-            doorsOpen = !doorsOpen;
-            model.animationName = doorsOpen ? "abrir_puertas" : "cerrar_puertas";
-            model.play();
-        }
+        // Mapeo de colores a archivos GLB en MODELOAR2
+        const colorMap = {
+            'red': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-red.glb',
+            'blue': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-blue.glb',
+            'white': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-white.glb'
+        };
 
-        function toggleMeasurements() {
-            measuresVisible = !measuresVisible;
-            document.querySelectorAll('.hotspot').forEach(el => {
-                el.style.display = measuresVisible ? 'block' : 'none';
+        // Cambiar el modelo según el color seleccionado
+        colorSelector.addEventListener('change', (event) => {
+            const selectedColor = event.target.value;
+            carModel.src = colorMap[selectedColor];
+        });
+
+        // Mostrar especificaciones técnicas
+        specsButton.addEventListener('click', () => {
+            infoContent.innerHTML = `
+                <h2>Especificaciones Técnicas</h2>
+                <ul>
+                    <li><strong>Motor:</strong> 1.6 CRDi VGT</li>
+                    <li><strong>Potencia:</strong> 136 CV</li>
+                    <li><strong>Transmisión:</strong> Manual de 6 velocidades</li>
+                    <li><strong>Velocidad Máxima:</strong> 194 km/h</li>
+                    <li><strong>Aceleración 0-100 km/h:</strong> 10.5 segundos</li>
+                    <li><strong>Consumo Combinado:</strong> 4.5 l/100 km</li>
+                    <li><strong>Emisiones de CO2:</strong> 119 g/km</li>
+                </ul>
+            `;
+            infoBox.style.display = 'block';
+        });
+
+        // Simulación de averías
+        faultsButton.addEventListener('click', () => {
+            hotspots.forEach(hotspot => {
+                hotspot.style.display = 'block';
             });
-        }
+        });
+
+        // Mostrar información de la avería al hacer clic en un hotspot
+        hotspots.forEach(hotspot => {
+            hotspot.addEventListener('click', () => {
+                const faultInfo = {
+                    'engineHotspot': {
+                        title: 'Problema en el Motor',
+                        description: 'Posible obstrucción en el filtro de partículas diésel, lo que puede causar pérdida de potencia y aumento de emisiones.'
+                    },
+                    'transmissionHotspot': {
+                        title: 'Fallo en la Transmisión',
+                        description: 'Pérdida de aceite en la caja de cambios, lo que puede provocar cambios bruscos y desgaste prematuro.'
+                    },
+                    'suspensionHotspot': {
+                        title: 'Problema en la Suspensión',
+                        description: 'Desgaste en los amortiguadores, reduciendo la estabilidad del vehículo en curvas.'
+                    }
+                };
+
+                const data = faultInfo[hotspot.id];
+                infoContent.innerHTML = `<h2>${data.title}</h2><p>${data.description}</p>`;
+                infoBox.style.display = 'block';
+            });
+        });
+
+        // Cerrar el cuadro de información
+        closeInfo.addEventListener('click', () => {
+            infoBox.style.display = 'none';
+        });
     </script>
 </body>
 </html>
