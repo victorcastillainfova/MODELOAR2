@@ -1,98 +1,69 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visor 3D - MODELOAR2</title>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo 3D en AR</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.1.0/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    model-viewer {
+      width: 100%;
+      height: 80vh;
+      margin: auto;
+    }
+    .controls {
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Visor del modelo 3D -->
+  <model-viewer 
+    id="modelViewer"
+    src="KIA-2.glb"
+    alt="Modelo 3D de un coche"
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    environment-image="neutral"
+    auto-rotate
+    camera-controls
+    background-color="#ffffff">
+  </model-viewer>
+
+  <!-- Controles -->
+  <div class="controls">
+    <label for="bgColor">Color de fondo:</label>
+    <input type="color" id="bgColor" value="#ffffff">
+
+    <label for="lightIntensity">Intensidad de luz:</label>
+    <input type="range" id="lightIntensity" min="0" max="2" step="0.1" value="1">
+  </div>
+
+  <script>
+    const modelViewer = document.getElementById('modelViewer');
     
-    <!-- Importar la librería model-viewer -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.0.0-beta.6"></script>
+    // Cambiar color de fondo
+    document.getElementById('bgColor').addEventListener('input', (event) => {
+      modelViewer.style.backgroundColor = event.target.value;
+    });
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-      }
+    // Ajustar intensidad de luz
+    document.getElementById('lightIntensity').addEventListener('input', (event) => {
+      modelViewer.setAttribute('exposure', event.target.value);
+    });
+  </script>
 
-      #viewer-container {
-        width: 100%;
-        height: 80vh;
-      }
-
-      model-viewer {
-        width: 100%;
-        height: 100%;
-      }
-
-      /* Estilos de los controles */
-      .controls {
-        width: 100%;
-        text-align: center;
-        background: white;
-        padding: 10px;
-        box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .controls label {
-        margin: 0 10px;
-        font-size: 14px;
-      }
-    </style>
-  </head>
-
-  <body>
-    <!-- Contenedor del visor -->
-    <div id="viewer-container">
-      <model-viewer 
-        id="carModel"
-        src="MODELOAR2/KIA-2.glb"  <!-- Ajustamos la ruta para que esté dentro de MODELOAR2 -->
-        alt="Coche en 3D"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        auto-rotate
-        background-color="#ffffff"
-        exposure="1"
-        environment-image="neutral"
-      >
-      </model-viewer>
-    </div>
-
-    <!-- Controles -->
-    <div class="controls">
-      <label for="light-intensity">🔆 Intensidad de Luz:</label>
-      <input type="range" id="light-intensity" min="0" max="3" step="0.1" value="1">
-
-      <label for="exposure">🔅 Exposición:</label>
-      <input type="range" id="exposure" min="0.5" max="2" step="0.1" value="1">
-
-      <label for="bg-color">🎨 Color Fondo:</label>
-      <input type="color" id="bg-color" value="#ffffff">
-    </div>
-
-    <script>
-      const modelViewer = document.getElementById("carModel");
-      
-      // Control de intensidad de luz
-      document.getElementById("light-intensity").addEventListener("input", (event) => {
-        modelViewer.setAttribute("shadow-intensity", event.target.value);
-      });
-
-      // Control de exposición
-      document.getElementById("exposure").addEventListener("input", (event) => {
-        modelViewer.setAttribute("exposure", event.target.value);
-      });
-
-      // Cambio de color de fondo
-      document.getElementById("bg-color").addEventListener("input", (event) => {
-        modelViewer.setAttribute("background-color", event.target.value);
-      });
-    </script>
-  </body>
+</body>
 </html>
