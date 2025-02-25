@@ -3,121 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor 3D - KIA-2</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <title>Modelo 3D en AR</title>
+  <script type="module">
+    import { LitElement, html, css } from 'https://unpkg.com/lit@2.0.0-beta.0?module';
+
+    class ARControls extends LitElement {
+      static properties = {
+        lightIntensity: { type: Number },
+        shadowIntensity: { type: Number },
+        exposure: { type: Number },
+        rotation: { type: Number },
+        showGrid: { type: Boolean }
+      };
+
+      constructor() {
+        super();
+        this.lightIntensity = 1;
+        this.shadowIntensity = 1;
+        this.exposure = 1;
+        this.rotation = 0;
+        this.showGrid = true;
+      }
+
+      render() {
+        return html`
+          <div class="controls">
+            <label for="lightIntensity">Intensidad de luz:</label>
+            <input type="range" id="lightIntensity" min="0" max="3" .value="${this.lightIntensity}" @input="${this.updateLightIntensity}">
+          
+            <label for="shadowIntensity">Intensidad de sombras:</label>
+            <input type="range" id="shadowIntensity" min="0" max="3" .value="${this.shadowIntensity}" @input="${this.updateShadowIntensity}">
+          
+            <label for="exposure">Exposición:</label>
+            <input type="range" id="exposure" min="0" max="2" step="0.1" .value="${this.exposure}" @input="${this.updateExposure}">
+          
+            <label for="rotation">Rotación:</label>
+            <input type="range" id="rotation" min="0" max="360" .value="${this.rotation}" @input="${this.updateRotation}">
+          
+            <label for="showGrid">Mostrar cuadrícula:</label>
+            <input type="checkbox" id="showGrid" ?checked="${this.showGrid}" @change="${this.toggleGrid}">
+          </div>
+          <model-viewer
+            id="modelViewer"
+            src="KIA-2.glb"
+            alt="Coche en 3D"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            background-color="#ffffff"
+            exposure="${this.exposure}"
+            shadow-intensity="${this.shadowIntensity}"
+            light-intensity="${this.lightIntensity}"
+            rotation="${this.rotation}deg"
+            environment-image="neutral"
+            .show-rotation="${this.rotation}"
+            .shadow-intensity="${this.shadowIntensity}"
+            .light-intensity="${this.lightIntensity}"
+            .exposure="${this.exposure}"
+            .style="width: 100%; height: 100vh;">
+          </model-viewer>
+        `;
+      }
+
+      updateLightIntensity(event) {
+        this.lightIntensity = event.target.value;
+        this.updateViewerAttributes();
+      }
+
+      updateShadowIntensity(event) {
+        this.shadowIntensity = event.target.value;
+        this.updateViewerAttributes();
+      }
+
+      updateExposure(event) {
+        this.exposure = event.target.value;
+        this.updateViewerAttributes();
+      }
+
+      updateRotation(event) {
+        this.rotation = event.target.value;
+        this.updateViewerAttributes();
+      }
+
+      toggleGrid(event) {
+        this.showGrid = event.target.checked;
+        const modelViewer = this.shadowRoot.querySelector('model-viewer');
+        modelViewer.setAttribute('grid', this.showGrid ? 'true' : 'false');
+      }
+
+      updateViewerAttributes() {
+        const modelViewer = this.shadowRoot.querySelector('model-viewer');
+        modelViewer.setAttribute('light-intensity', this.lightIntensity);
+        modelViewer.setAttribute('shadow-intensity', this.shadowIntensity);
+        modelViewer.setAttribute('exposure', this.exposure);
+        modelViewer.setAttribute('rotation', `${this.rotation}deg`);
+      }
+    }
+
+    customElements.define('ar-controls', ARControls);
+  </script>
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #f0f0f0;
     }
-    model-viewer {
-      width: 90%;
-      height: 80vh;
-    }
+
     .controls {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      position: absolute;
+      z-index: 10;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 15px;
+      border-radius: 10px;
     }
-    label {
-      font-weight: bold;
+
+    .controls label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    .controls input {
+      width: 200px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Visor 3D con sombras y AR -->
-  <model-viewer 
-    id="carModel"
-    src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb" 
-    alt="Coche en 3D"
-    ar 
-    ar-modes="webxr scene-viewer quick-look"
-    camera-controls 
-    auto-rotate
-    background-color="#ffffff"
-    shadow-intensity="1"
-    shadow-softness="0.5"
-    environment-image="neutral">
-  </model-viewer>
-
-  <!-- Controles -->
-  <div class="controls">
-    <label>🔆 Luz:</label>
-    <input type="range" id="light-intensity" min="0" max="3" step="0.1" value="1">
-
-    <label>🔅 Exposición:</label>
-    <input type="range" id="exposure" min="0.5" max="2" step="0.1" value="1">
-
-    <label>🔄 Rotación:</label>
-    <input type="range" id="rotation" min="0" max="360" step="1" value="0">
-
-    <label>🔍 Zoom (Campo de visión):</label>
-    <input type="range" id="zoom" min="10" max="50" step="1" value="30">
-
-    <label>🎨 Color de fondo:</label>
-    <input type="color" id="bgColor" value="#ffffff">
-
-    <label>🌑 Sombras:</label>
-    <input type="checkbox" id="toggleShadows" checked>
-
-    <label>🌄 Entorno:</label>
-    <select id="environment">
-      <option value="neutral">Neutral</option>
-      <option value="legacy">Legacy</option>
-      <option value="sunset">Atardecer</option>
-      <option value="studio">Estudio</option>
-    </select>
-  </div>
-
-  <script>
-    const modelViewer = document.getElementById("carModel");
-
-    // Control de luz
-    document.getElementById("light-intensity").addEventListener("input", (event) => {
-      modelViewer.setAttribute("shadow-intensity", event.target.value);
-    });
-
-    // Control de exposición
-    document.getElementById("exposure").addEventListener("input", (event) => {
-      modelViewer.setAttribute("exposure", event.target.value);
-    });
-
-    // Control de rotación (se aplica a camera-orbit)
-    document.getElementById("rotation").addEventListener("input", (event) => {
-      let currentOrbit = modelViewer.getAttribute("camera-orbit");
-      modelViewer.setAttribute("camera-orbit", `${currentOrbit.split(" ")[0]} ${event.target.value}deg ${currentOrbit.split(" ")[2]}`);
-    });
-
-    // Control de zoom (se aplica a camera-orbit)
-    document.getElementById("zoom").addEventListener("input", (event) => {
-      let currentOrbit = modelViewer.getAttribute("camera-orbit");
-      modelViewer.setAttribute("camera-orbit", `${currentOrbit.split(" ")[0]} ${currentOrbit.split(" ")[1]} ${event.target.value}%`);
-    });
-
-    // Cambio de color de fondo
-    document.getElementById("bgColor").addEventListener("input", (event) => {
-      modelViewer.setAttribute("background-color", event.target.value);
-    });
-
-    // Activar/desactivar sombras
-    document.getElementById("toggleShadows").addEventListener("change", (event) => {
-      modelViewer.setAttribute("shadow-intensity", event.target.checked ? "1" : "0");
-    });
-
-    // Cambio de entorno de iluminación
-    document.getElementById("environment").addEventListener("change", (event) => {
-      modelViewer.setAttribute("environment-image", event.target.value);
-    });
-
-  </script>
-
+  <ar-controls></ar-controls>
 </body>
 </html>
