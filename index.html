@@ -23,7 +23,7 @@
             display: flex;
             gap: 10px;
         }
-        button, select {
+        button {
             padding: 10px;
             font-size: 16px;
             cursor: pointer;
@@ -65,11 +65,6 @@
     <h1>Kia Ceed Sportwagon 1.6 - Visor 3D Interactivo</h1>
 
     <div id="controls">
-        <select id="colorSelector">
-            <option value="red">Rojo</option>
-            <option value="blue">Azul</option>
-            <option value="white">Blanco</option>
-        </select>
         <button id="specsButton">Especificaciones Técnicas</button>
         <button id="faultsButton">Simulación de Averías</button>
     </div>
@@ -96,26 +91,12 @@
 
     <script>
         const carModel = document.getElementById('carModel');
-        const colorSelector = document.getElementById('colorSelector');
         const specsButton = document.getElementById('specsButton');
         const faultsButton = document.getElementById('faultsButton');
         const infoBox = document.getElementById('info-box');
         const infoContent = document.getElementById('info-content');
         const closeInfo = document.getElementById('close-info');
         const hotspots = document.querySelectorAll('.hotspot');
-
-        // Mapeo de colores a archivos GLB en MODELOAR2
-        const colorMap = {
-            'red': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-red.glb',
-            'blue': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-blue.glb',
-            'white': 'https://victorcastillainfova.github.io/MODELOAR2/KIA-2-white.glb'
-        };
-
-        // Cambiar el modelo según el color seleccionado
-        colorSelector.addEventListener('change', (event) => {
-            const selectedColor = event.target.value;
-            carModel.src = colorMap[selectedColor];
-        });
 
         // Mostrar especificaciones técnicas
         specsButton.addEventListener('click', () => {
