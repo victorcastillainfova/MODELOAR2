@@ -16,17 +16,20 @@
     <model-viewer id="carModel" src="KIA-2.glb" ar camera-controls auto-rotate></model-viewer>
 
     <script>
-        let rotationAngle = 0;
+        let rotationAngle = 0; // Variable para rastrear el ángulo
 
         function rotateModel(degrees) {
             const modelViewer = document.getElementById('carModel');
+            if (!modelViewer) {
+                console.error("❌ Error: No se encontró el elemento model-viewer.");
+                return;
+            }
             rotationAngle += degrees;
-            if (rotationAngle >= 360) rotationAngle = 0;
             modelViewer.setAttribute('rotation', 0 ${rotationAngle}deg 0);
-            console.log("Ángulo actualizado:", rotationAngle);
+            console.log("✅ Ángulo actualizado:", rotationAngle);
         }
 
-        // Asegurar que la función está disponible en la consola
+        // Hacer la función accesible desde la consola
         window.rotateModel = rotateModel;
     </script>
 
