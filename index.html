@@ -23,7 +23,11 @@
             rotationAngle += degrees;
             if (rotationAngle >= 360) rotationAngle = 0;
             modelViewer.setAttribute('rotation', 0 ${rotationAngle}deg 0);
+            console.log("Ángulo actualizado:", rotationAngle);
         }
+
+        // Asegurar que la función está disponible en la consola
+        window.rotateModel = rotateModel;
     </script>
 
 </body>
