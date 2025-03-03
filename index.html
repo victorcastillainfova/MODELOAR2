@@ -3,168 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo 3D Interactivo - Kia Ceed Sportwagon 1.6</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer@3.0.0/dist/model-viewer.js"></script>
+    <title>Parchís en RA</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            margin-top: 20px;
-        }
-        #controls {
-            margin: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        button {
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #info-box {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            position: absolute;
-            top: 100px;
-            max-width: 300px;
-            z-index: 10;
-        }
-        #info-box h2 {
-            margin-top: 0;
-        }
-        #close-info {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            float: right;
-        }
-        #colorSelector, #measureButton {
-            margin-top: 20px;
-        }
-        #measurements {
-            display: none;
-            position: absolute;
-            top: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            font-size: 18px;
-            border-radius: 5px;
-        }
+        body { margin: 0; text-align: center; font-family: Arial, sans-serif; }
     </style>
 </head>
 <body>
-    <h1>Kia Ceed Sportwagon 1.6 - Visor 3D Interactivo</h1>
 
-    <div id="controls">
-        <button id="specsButton">Especificaciones Técnicas</button>
-        <button id="measureButton">Mostrar Medidas</button>
-    </div>
-
-    <div id="colorSelector">
-        <label for="colorSelect">Seleccionar color del coche:</label>
-        <select id="colorSelect">
-            <option value="original">Color 1 (Original)</option>
-            <option value="black">Color 2</option>
-            <option value="white">Color 3</option>
-            <option value="blue">Color 4</option>
-            <option value="yellow">Color 5</option>
-        </select>
-    </div>
-
-    <model-viewer id="carModel"
+    <!-- Visor de Realidad Aumentada -->
+    <model-viewer 
         src="https://victorcastillainfova.github.io/MODELOAR2/KIA-2.glb"
-        alt="Modelo 3D del Kia Ceed Sportwagon 1.6"
-        auto-rotate
-        camera-controls
-        ar
-        ar-modes="scene-viewer quick-look webxr"
-        style="width: 100%; height: 500px;">
-        <button slot="ar-button">Ver en RA</button>
+        ar 
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls 
+        environment-image="neutral"
+        style="width: 100vw; height: 80vh;"
+        id="parchis">
+        
+        <!-- Dado 3D dentro de la escena -->
+        <model-viewer 
+            id="dado"
+            src="https://victorcastillainfova.github.io/MODELOAR2/dado.glb"
+            slot="hotspot-dado"
+            ar 
+            camera-controls
+            style="width: 50px; height: 50px;"
+            exposure="1"
+            shadow-intensity="1">
+        </model-viewer>
+
     </model-viewer>
 
-    <div id="info-box">
-        <button id="close-info">Cerrar</button>
-        <div id="info-content"></div>
-    </div>
-
-    <div id="measurements">
-        <strong>Medidas del vehículo:</strong>
-        <ul>
-            <li><strong>Longitud:</strong> 4.61 m</li>
-            <li><strong>Anchura:</strong> 1.80 m</li>
-            <li><strong>Altura:</strong> 1.46 m</li>
-        </ul>
-    </div>
-
     <script>
-        const carModel = document.getElementById('carModel');
-        const specsButton = document.getElementById('specsButton');
-        const infoBox = document.getElementById('info-box');
-        const infoContent = document.getElementById('info-content');
-        const closeInfo = document.getElementById('close-info');
-        const colorSelect = document.getElementById('colorSelect');
-        const measureButton = document.getElementById('measureButton');
-        const measurements = document.getElementById('measurements');
+        const dado = document.getElementById("dado");
 
-        // Mostrar especificaciones técnicas
-        specsButton.addEventListener('click', () => {
-            infoContent.innerHTML = `
-                <h2>Especificaciones Técnicas</h2>
-                <ul>
-                    <li><strong>Motor:</strong> 1.6 CRDi VGT</li>
-                    <li><strong>Potencia:</strong> 136 CV</li>
-                    <li><strong>Transmisión:</strong> Manual de 6 velocidades</li>
-                    <li><strong>Velocidad Máxima:</strong> 194 km/h</li>
-                    <li><strong>Aceleración 0-100 km/h:</strong> 10.5 segundos</li>
-                    <li><strong>Consumo Combinado:</strong> 4.5 l/100 km</li>
-                    <li><strong>Emisiones de CO2:</strong> 119 g/km</li>
-                </ul>
-            `;
-            infoBox.style.display = 'block';
-        });
+        dado.addEventListener("click", () => {
+            const caras = [
+                "0 0 0",   // 1
+                "0 90 0",  // 2
+                "0 180 0", // 3
+                "0 270 0", // 4
+                "90 0 0",  // 5
+                "-90 0 0"  // 6
+            ];
+            
+            let resultado = Math.floor(Math.random() * 6);
+            dado.setAttribute("rotation", caras[resultado]);
 
-        // Cambiar color del coche en el visor 3D
-        colorSelect.addEventListener('change', (event) => {
-            const selectedColor = event.target.value;
-            if (selectedColor === "black") {
-                carModel.setAttribute('style', 'width: 100%; height: 500px; filter: hue-rotate(180deg)');
-            } else if (selectedColor === "white") {
-                carModel.setAttribute('style', 'width: 100%; height: 500px; filter: hue-rotate(90deg)');
-            } else if (selectedColor === "blue") {
-                carModel.setAttribute('style', 'width: 100%; height: 500px; filter: hue-rotate(240deg)');
-            } else if (selectedColor === "yellow") {
-                carModel.setAttribute('style', 'width: 100%; height: 500px; filter: hue-rotate(60deg)');
-            } else {
-                carModel.setAttribute('style', 'width: 100%; height: 500px;'); // Color original
-            }
-        });
-
-        // Mostrar/Ocultar medidas
-        measureButton.addEventListener('click', () => {
-            if (measurements.style.display === 'none') {
-                measurements.style.display = 'block';
-            } else {
-                measurements.style.display = 'none';
-            }
-        });
-
-        // Cerrar el cuadro de información
-        closeInfo.addEventListener('click', () => {
-            infoBox.style.display = 'none';
+            alert("Has sacado un " + (resultado + 1));
         });
     </script>
+
 </body>
 </html>
