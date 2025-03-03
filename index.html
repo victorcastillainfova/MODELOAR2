@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor 3D en AR</title>
+    <title>Visor 3D de Coche</title>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #111; }
-        model-viewer { width: 100%; height: 100vh; }
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #111;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100vh;
+        }
     </style>
 </head>
 <body>
@@ -16,20 +26,25 @@
     <model-viewer id="carModel" src="KIA-2.glb" ar camera-controls auto-rotate></model-viewer>
 
     <script>
-        let rotationAngle = 0; // Variable para rastrear el ángulo
+        // Variable para almacenar el ángulo de rotación actual
+        let rotationAngle = 0;
 
+        // Función para rotar el modelo
         function rotateModel(degrees) {
             const modelViewer = document.getElementById('carModel');
-            if (!modelViewer) {
-                console.error("❌ Error: No se encontró el elemento model-viewer.");
-                return;
+            if (modelViewer) {
+                rotationAngle += degrees;
+                // Normalizar el ángulo para que esté entre 0 y 360 grados
+                rotationAngle = rotationAngle % 360;
+                // Aplicar la rotación al modelo
+                modelViewer.setAttribute('rotation', 0 ${rotationAngle}deg 0);
+                console.log(Modelo rotado a ${rotationAngle} grados.);
+            } else {
+                console.error("Elemento 'carModel' no encontrado.");
             }
-            rotationAngle += degrees;
-            modelViewer.setAttribute('rotation', 0 ${rotationAngle}deg 0);
-            console.log("✅ Ángulo actualizado:", rotationAngle);
         }
 
-        // Hacer la función accesible desde la consola
+        // Hacer que la función esté disponible en el contexto global
         window.rotateModel = rotateModel;
     </script>
 
